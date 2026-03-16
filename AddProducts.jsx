@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 
 const AddProducts = () => {
@@ -14,8 +15,39 @@ const AddProducts = () => {
   const[error,setError]=useState("")
 
   const submit = async(e)=>{
-    
-  }
+    e.preventDefault()
+    setLoading("Please wait...")
+
+    try{
+      const data = new FormData()
+
+      data.append("product_name", product_name)
+      data.append("product_description", product_description)
+      data.append("product_cost", product_cost)
+      data.append("product_photo", product_photo)
+
+      const response=await axios.post("https://mkadrian.alwaysdata.net/api/addproducts", data)
+
+      setLoading("")
+
+      setSuccess(response.data.message)
+
+      setProductname("")
+      setProductdescription("")
+      setProductcost("")
+      setProductphoto("")
+
+      
+
+
+
+    }
+    catch(error){
+      setLoading("")
+      setError(error.message )
+    }
+
+  };
   
 
 
@@ -50,7 +82,7 @@ const AddProducts = () => {
           ></textarea><br />
 
           <input 
-          type="textarea" 
+          type="number" 
           placeholder='product cost' 
           className='form-control'
           required
@@ -63,7 +95,8 @@ const AddProducts = () => {
           type="file" 
           className='form-control' 
           required
-          onChange={(e)=>setProductphoto(e.target.value)}
+          accept="image/*"
+          onChange={(e)=>setProductphoto(e.target.files[0])}
           /><br />
 
           <input type="submit"  value={"Upload Product"} className='w-100 form-control text-black  bg-info mb-3'/>
@@ -71,6 +104,7 @@ const AddProducts = () => {
         </form>
 
       </div>
+      
         
         
     </div>
